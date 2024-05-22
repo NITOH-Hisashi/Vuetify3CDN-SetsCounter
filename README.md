@@ -1,3 +1,3 @@
-# Vuetify3CDN SetsCounter
+# Vuetify3CDN SetsCounterApplication
 - https://ja.vuejs.org/
 - https://vuetifyjs.com/en/
