@@ -6,6 +6,7 @@
     <link href="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+    <title>SetsCounterApplication</title>
 </head>
 
 <body>
@@ -14,7 +15,7 @@
             <v-app-bar app>
                 <!-- ヘッドバー  -->
                 <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-toolbar-title>Application</v-toolbar-title>
+                <v-toolbar-title>SetsCounterApplication</v-toolbar-title>
                 <div class='foo' style='margin-left: auto;'>
 
                 </div>
@@ -23,8 +24,12 @@
             <v-navigation-drawer v-model="drawer" app>
                 <!-- サイドメニューバー  -->
                 <v-expansion-panels>
-                    <v-expansion-panel v-for="i in 3" :key="i" title="Item"
-                        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."></v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://ntl.amus.biz" target="_blank">ntl.amus.biz</a>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://www.amus.biz" target="_blank">www.amus.biz</a>
+                    </v-expansion-panel>
                 </v-expansion-panels>
             </v-navigation-drawer>
 
