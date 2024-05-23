@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
+    <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
-    <title>SetsCounterApplication</title>
+    <title>SetsCounter Application © AMUS IT Support / AMU'S</title>
 </head>
 
 <body>
@@ -15,11 +16,25 @@
             <v-app-bar app>
                 <!-- ヘッドバー  -->
                 <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-toolbar-title>SetsCounterApplication</v-toolbar-title>
-                <div class='foo' style='margin-left: auto;'>
-
-                </div>
+                <v-toolbar-title>
+                    SetsCounter
+                </v-toolbar-title>
             </v-app-bar>
+            <v-container>
+                <v-row>
+                    <v-col>
+                        .
+                    </v-col>
+                </v-row>
+                <v-row>
+                    <v-col>
+                        .
+                    </v-col>
+                </v-row>
+            </v-container>
+            <div style='margin-left: auto;'>
+                © AMUS IT Support / AMU'S
+            </div>
 
             <v-navigation-drawer v-model="drawer" app>
                 <!-- サイドメニューバー  -->
@@ -35,31 +50,13 @@
 
             <v-main>
                 <!-- メインコンテンツ  -->
-                <v-row>
-                    <v-col>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
-                    </v-col>
-                    <v-col>
-                    </v-col>
-                    <v-col>
-                        <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable></v-text-field>
-                    </v-col>
-                    <v-col>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                    </v-col>
-                    <v-col>
-                        <v-btn :disabled="loading" :loading="loading" @click="start">
-                            Start
-                        </v-btn>
-                    </v-col>
-                    <v-col>
-                    </v-col>
-                </v-row>
+                <v-container class="bg-surface-variant">
+                    <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
+                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable></v-text-field>
+                    <v-btn :disabled="loading" :loading="loading" @click="start">
+                        Start
+                    </v-btn>
+                </v-container>
                 {{time}}
             </v-main>
             <v-dialog v-if="isDialog"></v-dialog>
