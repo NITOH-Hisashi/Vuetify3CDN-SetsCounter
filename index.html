@@ -13,28 +13,13 @@
 <body>
     <div id="app">
         <v-app>
-            <v-app-bar app>
+            <v-app-bar app image="2275137.jpg" density="prominent">
                 <!-- ヘッドバー  -->
                 <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
                 <v-toolbar-title>
                     SetsCounter
                 </v-toolbar-title>
             </v-app-bar>
-            <v-container>
-                <v-row>
-                    <v-col>
-                        .
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col>
-                        .
-                    </v-col>
-                </v-row>
-            </v-container>
-            <div style='margin-left: auto;'>
-                © AMUS IT Support / AMU'S
-            </div>
 
             <v-navigation-drawer v-model="drawer" app>
                 <!-- サイドメニューバー  -->
@@ -45,9 +30,14 @@
                     <v-expansion-panel>
                         <a href="https://www.amus.biz" target="_blank">www.amus.biz</a>
                     </v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://www.ac-illust.com/main/detail.php?id=2275137&word=%E3%83%97%E3%83%A9%E3%83%B3%E3%82%AF%E3%80%80%E5%A5%B3%E6%80%A7"
+                            target="_blank">イラスト素材</a>
+                    </v-expansion-panel>
                 </v-expansion-panels>
             </v-navigation-drawer>
 
+            <div style="margin-left: auto;margin-top: 130px;"> © AMUS IT Support / AMU'S </div>
             <v-main>
                 <!-- メインコンテンツ  -->
                 <v-container class="bg-surface-variant">
