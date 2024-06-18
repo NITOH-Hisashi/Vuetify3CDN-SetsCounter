@@ -1,0 +1,46 @@
+.circle {
+    /* 2πr where r is the radius (40) */
+    /* stroke-dasharray: 251.2; */
+    stroke-dasharray: 502.4;
+    stroke-dashoffset: 502.4;
+    transform-origin: 50% 50%;
+    transform: rotate(-90deg);
+    /* Start the animation from the top (0 degrees) */
+    /* transition: stroke-dashoffset 1s, stroke 0.1s; */
+}
+
+.animate {
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s;
+    /* Set the drawing animation duration to 1s */
+}
+
+.reset {
+    stroke: white;
+    /* Resetting color to white */
+    stroke-dashoffset: 502.4;
+    transition: stroke-dashoffset 0.1s;
+    /* Set the reset animation duration to 0.1s */
+}
+
+text {
+    font-size: 48px;
+    text-anchor: middle;
+    /* dominant-baseline: middle; */
+}
+
+.svg-container {
+    width: 50%;
+    /* 親要素の幅の50% */
+    height: auto;
+    /* 自動調整 */
+}
+
+.svg-content {
+    width: 100%;
+    height: 100%;
+}
+
+#controls {
+    margin-top: 20px;
+}

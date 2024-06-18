@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
     <title>SetsCounter Application © AMUS IT Support / AMU'S</title>
@@ -62,8 +63,15 @@
             </v-main>
             <div class="text-center pa-4">
                 <v-dialog v-model="dialog" location="center">
-                    <v-card max-width="400" prepend-icon="mdi-update" :text="'残り'+seconds+'秒'"
+                    <v-card max-width="400" prepend-icon="mdi-update" :text="'残り' + seconds + '秒'"
                         title="Update in progress" class="mx-auto">
+                        <div class="svg-container">
+                            <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                <circle id="circle" cx="100" cy="100" r="80" stroke="black" stroke-width="8" fill="none"
+                                    class="circle" />
+                                <text x="100" y="116" id="number"></text>
+                            </svg>
+                        </div>
                         <template v-slot:actions>
                             <v-btn class="ms-auto" text="Ok" :disabled="loading" :loading="loading"
                                 @click="dialog = false"></v-btn>
@@ -74,6 +82,7 @@
         </v-app>
     </div>
 
+    <script src="index.js"></script>
     <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
     <script src="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.js"></script>
     <script lang="ts">
