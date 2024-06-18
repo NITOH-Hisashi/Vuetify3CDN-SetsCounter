@@ -40,9 +40,16 @@
             <v-main>
                 <!-- メインコンテンツ  -->
                 <v-container>
-                    <v-row><v-spacer></v-spacer><v-col><v-sheet class="pa-2 ma-2">
-                                © AMUS IT Support / AMU'S
-                            </v-sheet></v-col></v-row>
+                    <v-row>
+                        <v-spacer></v-spacer>
+                        <v-spacer></v-spacer>
+                        <v-col><v-sheet class="pa-2 ma-2">
+                                © AMUS IT Support
+                            </v-sheet></v-col>
+                        <v-col><v-sheet class="pa-2 ma-2">
+                                / AMU'S
+                            </v-sheet></v-col>
+                    </v-row>
                 </v-container>
                 <v-container class="bg-surface-variant">
                     <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
@@ -53,7 +60,17 @@
                 </v-container>
                 {{time}}
             </v-main>
-            <v-dialog v-if="isDialog"></v-dialog>
+            <div class="text-center pa-4">
+                <v-dialog v-model="dialog" location="center">
+                    <v-card max-width="400" prepend-icon="mdi-update" :text="'残り'+seconds+'秒'"
+                        title="Update in progress" class="mx-auto">
+                        <template v-slot:actions>
+                            <v-btn class="ms-auto" text="Ok" :disabled="loading" :loading="loading"
+                                @click="dialog = false"></v-btn>
+                        </template>
+                    </v-card>
+                </v-dialog>
+            </div>
         </v-app>
     </div>
 
@@ -72,7 +89,7 @@
                     },
                     drawer: false,
                     loading: false,
-                    isDialog: false,
+                    dialog: false,
                     sets: 1,
                     secondsDefault: 30,
                     seconds: 0,
@@ -83,6 +100,7 @@
             methods: {
                 start() {
                     this.loading = true
+                    this.dialog = true
                     this.time = new Date()
                     this.timer = setInterval(this.setSeconds, 1000)
                 },
@@ -93,6 +111,7 @@
                         this.seconds = this.secondsDefault
                         this.sets++
                         this.loading = false
+                        this.dialog = false
                     }
                 },
             },
