@@ -1,46 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
+    <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
     <link href="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.css" rel="stylesheet">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+    <title>SetsCounter Application © AMUS IT Support / AMU'S</title>
 </head>
 
 <body>
     <div id="app">
         <v-app>
-            <v-app-bar app>
+            <v-app-bar app image="2275137.jpg" density="prominent">
                 <!-- ヘッドバー  -->
                 <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-                <v-toolbar-title>Application</v-toolbar-title>
-                <div class='foo' style='margin-left: auto;'>
-
-                </div>
+                <v-toolbar-title>
+                    SetsCounter
+                </v-toolbar-title>
             </v-app-bar>
 
             <v-navigation-drawer v-model="drawer" app>
                 <!-- サイドメニューバー  -->
                 <v-expansion-panels>
-                    <v-expansion-panel v-for="i in 3" :key="i" title="Item"
-                        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."></v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://ntl.amus.biz" target="_blank">ntl.amus.biz</a>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://www.amus.biz" target="_blank">www.amus.biz</a>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://www.ac-illust.com/main/detail.php?id=2275137&word=%E3%83%97%E3%83%A9%E3%83%B3%E3%82%AF%E3%80%80%E5%A5%B3%E6%80%A7"
+                            target="_blank">イラスト素材せいじんさん</a>
+                    </v-expansion-panel>
                 </v-expansion-panels>
             </v-navigation-drawer>
 
             <v-main>
                 <!-- メインコンテンツ  -->
-                <div>
-                    <v-btn>
-                        push
+                <v-container>
+                    <v-row>
+                        <v-spacer></v-spacer>
+                        <v-spacer></v-spacer>
+                        <v-col><v-sheet class="pa-2 ma-2">
+                                © AMUS IT Support
+                            </v-sheet></v-col>
+                        <v-col><v-sheet class="pa-2 ma-2">
+                                / AMU'S
+                            </v-sheet></v-col>
+                    </v-row>
+                </v-container>
+                <v-container class="bg-surface-variant">
+                    <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
+                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable></v-text-field>
+                    <v-btn :disabled="loading" :loading="loading" @click="start">
+                        Start
                     </v-btn>
-                </div>
-                <v-row no-gutters>
-                    <v-col v-for="n in 25" :key="n">
-                        <v-card width="300" height="600" outlined>Card</v-card>
-                    </v-col>
-                </v-row>
+                </v-container>
+                {{time}}
             </v-main>
+            <div class="text-center pa-4">
+                <v-dialog v-model="dialog" location="center">
+                    <v-card max-width="400" prepend-icon="mdi-update" :text="'残り'+seconds+'秒'"
+                        title="Update in progress" class="mx-auto">
+                        <template v-slot:actions>
+                            <v-btn class="ms-auto" text="Ok" :disabled="loading" :loading="loading"
+                                @click="dialog = false"></v-btn>
+                        </template>
+                    </v-card>
+                </v-dialog>
+            </div>
         </v-app>
     </div>
 
@@ -57,12 +87,36 @@
                         nickname: "",
                         gender: "",
                     },
-                    drawer: null,
+                    drawer: false,
+                    loading: false,
+                    dialog: false,
+                    sets: 1,
+                    secondsDefault: 30,
+                    seconds: 0,
+                    time: null,
+                    timer: null,
                 };
             },
             methods: {
+                start() {
+                    this.loading = true
+                    this.dialog = true
+                    this.time = new Date()
+                    this.timer = setInterval(this.setSeconds, 1000)
+                },
+                setSeconds() {
+                    this.seconds--
+                    if (Number(this.seconds) <= 0) {
+                        clearInterval(this.timer)
+                        this.seconds = this.secondsDefault
+                        this.sets++
+                        this.loading = false
+                        this.dialog = false
+                    }
+                },
             },
             mounted() {
+                this.seconds = this.secondsDefault
             }
         });
         app.use(vuetify).mount('#app');
