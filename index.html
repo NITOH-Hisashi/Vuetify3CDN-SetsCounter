@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/vuetify@3.6/dist/vuetify.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
     <title>SetsCounter Application © AMUS IT Support / AMU'S</title>
@@ -13,9 +14,9 @@
 <body>
     <div id="app">
         <v-app>
-            <v-app-bar app image="2275137.jpg" density="prominent">
+            <v-app-bar app image="2275137.jpg" density="prominent" style="height: 132px;">
                 <!-- ヘッドバー  -->
-                <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                <v-app-bar-nav-icon @click="drawer = !drawer" style="height: 132px;"></v-app-bar-nav-icon>
                 <v-toolbar-title>
                     SetsCounter
                 </v-toolbar-title>
@@ -43,27 +44,38 @@
                     <v-row>
                         <v-spacer></v-spacer>
                         <v-spacer></v-spacer>
-                        <v-col><v-sheet class="pa-2 ma-2">
+                        <v-col>
+                            <v-sheet class="pa-2 ma-2" style="white-space: nowrap;">
                                 © AMUS IT Support
-                            </v-sheet></v-col>
-                        <v-col><v-sheet class="pa-2 ma-2">
+                            </v-sheet>
+                        </v-col>
+                        <v-col>
+                            <v-sheet class="pa-2 ma-2" style="white-space: nowrap;">
                                 / AMU'S
-                            </v-sheet></v-col>
+                            </v-sheet>
+                        </v-col>
                     </v-row>
                 </v-container>
                 <v-container class="bg-surface-variant">
                     <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
-                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable></v-text-field>
-                    <v-btn :disabled="loading" :loading="loading" @click="start">
+                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable
+                        id="countdown-seconds"></v-text-field>
+                    <v-btn :disabled="loading" :loading="loading" @click="start" id="start-button">
                         Start
                     </v-btn>
                 </v-container>
-                {{time}}
+                <v-card v-for="item in time">{{item}}</v-card>
             </v-main>
             <div class="text-center pa-4">
                 <v-dialog v-model="dialog" location="center">
-                    <v-card max-width="400" prepend-icon="mdi-update" :text="'残り'+seconds+'秒'"
-                        title="Update in progress" class="mx-auto">
+                    <v-card max-width="400" prepend-icon="mdi-update" title="Update in progress" class="mx-auto">
+                        <div class="svg-container mx-5">
+                            <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                <circle id="circle" cx="100" cy="100" r="80" stroke="black" stroke-width="8" fill="none"
+                                    class="circle" />
+                                <text x="100" y="116" id="number"></text>
+                            </svg>
+                        </div>
                         <template v-slot:actions>
                             <v-btn class="ms-auto" text="Ok" :disabled="loading" :loading="loading"
                                 @click="dialog = false"></v-btn>
@@ -74,8 +86,78 @@
         </v-app>
     </div>
 
-    <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.js"></script>
+    <script lang="js">
+
+        let countdownInterval;
+
+        function startCountdown(seconds) {
+            const circle = document.getElementById('circle');
+            const numberText = document.getElementById('number');
+
+            let currentNumber = seconds;
+
+            function decrementNumber() {
+                // 一旦アニメーションをリセット
+                circle.classList.remove('animate');
+                circle.classList.add('reset');
+
+                if (currentNumber > 0) {
+                    currentNumber--;
+                    numberText.textContent = currentNumber;
+                    animateCircle();
+                }
+            }
+
+            function animateCircle() {
+                circle.classList.remove('reset');
+                void circle.offsetWidth; // Reflowをトリガー
+
+                setTimeout(function () {
+                    circle.classList.add('animate');
+                }, 50); // 50ミリ秒の待ち時間
+            }
+
+            // 初期値をセット
+            numberText.textContent = currentNumber;
+            animateCircle();
+
+            countdownInterval = setInterval(() => {
+                decrementNumber();
+                if (currentNumber <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000); // 1000ミリ秒ごとにカウントダウン
+        }
+
+        function startCountdownFromInput() {
+            const countdownInput = document.getElementById('countdown-seconds');
+            const countdownSeconds = parseInt(countdownInput.value, 10);
+            if (isNaN(countdownSeconds) || countdownSeconds <= 0) {
+                alert('有効な秒数を入力してください');
+                return;
+            }
+
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            startCountdown(countdownSeconds);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const startButton = document.getElementById('start-button');
+            const countdownInput = document.getElementById('countdown-seconds');
+
+            startButton.addEventListener('click', startCountdownFromInput);
+            countdownInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    startCountdownFromInput();
+                }
+            });
+        });
+    </script>
+    <script src="https://unpkg.com/vue@3.4/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vuetify@3.6/dist/vuetify.min.js"></script>
     <script lang="ts">
         const vuetify = Vuetify.createVuetify()
         const app = Vue.createApp({
@@ -93,7 +175,7 @@
                     sets: 1,
                     secondsDefault: 30,
                     seconds: 0,
-                    time: null,
+                    time: [],
                     timer: null,
                 };
             },
@@ -101,7 +183,7 @@
                 start() {
                     this.loading = true
                     this.dialog = true
-                    this.time = new Date()
+                    this.time.push(new Date())
                     this.timer = setInterval(this.setSeconds, 1000)
                 },
                 setSeconds() {
@@ -111,7 +193,6 @@
                         this.seconds = this.secondsDefault
                         this.sets++
                         this.loading = false
-                        this.dialog = false
                     }
                 },
             },
