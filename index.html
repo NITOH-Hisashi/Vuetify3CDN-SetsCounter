@@ -60,7 +60,7 @@
                         Start
                     </v-btn>
                 </v-container>
-                {{time}}
+                <v-card v-for="item in time">{{item}}</v-card>
             </v-main>
             <div class="text-center pa-4">
                 <v-dialog v-model="dialog" location="center">
@@ -172,7 +172,7 @@
                     sets: 1,
                     secondsDefault: 30,
                     seconds: 0,
-                    time: null,
+                    time: [],
                     timer: null,
                 };
             },
@@ -180,7 +180,7 @@
                 start() {
                     this.loading = true
                     this.dialog = true
-                    this.time = new Date()
+                    this.time.push(new Date())
                     this.timer = setInterval(this.setSeconds, 1000)
                 },
                 setSeconds() {
