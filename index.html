@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/vuetify@3.6/dist/vuetify.min.css" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
@@ -54,8 +54,9 @@
                 </v-container>
                 <v-container class="bg-surface-variant">
                     <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
-                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable></v-text-field>
-                    <v-btn :disabled="loading" :loading="loading" @click="start">
+                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable
+                        id="countdown-seconds"></v-text-field>
+                    <v-btn :disabled="loading" :loading="loading" @click="start" id="start-button">
                         Start
                     </v-btn>
                 </v-container>
@@ -82,9 +83,78 @@
         </v-app>
     </div>
 
-    <script src="index.js"></script>
-    <script src="https://unpkg.com/vue@3.4.27/dist/vue.global.js"></script>
-    <script src="https://unpkg.com/vuetify@3.6.6/dist/vuetify.min.js"></script>
+    <script lang="js">
+
+        let countdownInterval;
+
+        function startCountdown(seconds) {
+            const circle = document.getElementById('circle');
+            const numberText = document.getElementById('number');
+
+            let currentNumber = seconds;
+
+            function decrementNumber() {
+                // 一旦アニメーションをリセット
+                circle.classList.remove('animate');
+                circle.classList.add('reset');
+
+                if (currentNumber > 0) {
+                    currentNumber--;
+                    numberText.textContent = currentNumber;
+                    animateCircle();
+                }
+            }
+
+            function animateCircle() {
+                circle.classList.remove('reset');
+                void circle.offsetWidth; // Reflowをトリガー
+
+                setTimeout(function () {
+                    circle.classList.add('animate');
+                }, 50); // 50ミリ秒の待ち時間
+            }
+
+            // 初期値をセット
+            numberText.textContent = currentNumber;
+            animateCircle();
+
+            countdownInterval = setInterval(() => {
+                decrementNumber();
+                if (currentNumber <= 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000); // 1000ミリ秒ごとにカウントダウン
+        }
+
+        function startCountdownFromInput() {
+            const countdownInput = document.getElementById('countdown-seconds');
+            const countdownSeconds = parseInt(countdownInput.value, 10);
+            if (isNaN(countdownSeconds) || countdownSeconds <= 0) {
+                alert('有効な秒数を入力してください');
+                return;
+            }
+
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+
+            startCountdown(countdownSeconds);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const startButton = document.getElementById('start-button');
+            const countdownInput = document.getElementById('countdown-seconds');
+
+            startButton.addEventListener('click', startCountdownFromInput);
+            countdownInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    startCountdownFromInput();
+                }
+            });
+        });
+    </script>
+    <script src="https://unpkg.com/vue@3.4/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vuetify@3.6/dist/vuetify.min.js"></script>
     <script lang="ts">
         const vuetify = Vuetify.createVuetify()
         const app = Vue.createApp({
