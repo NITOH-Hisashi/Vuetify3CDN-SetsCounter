@@ -14,9 +14,9 @@
 <body>
     <div id="app">
         <v-app>
-            <v-app-bar app image="2275137.jpg" density="prominent">
+            <v-app-bar app image="2275137.jpg" density="prominent" style="height: 132px;">
                 <!-- ヘッドバー  -->
-                <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                <v-app-bar-nav-icon @click="drawer = !drawer" style="height: 132px;"></v-app-bar-nav-icon>
                 <v-toolbar-title>
                     SetsCounter
                 </v-toolbar-title>
@@ -44,12 +44,16 @@
                     <v-row>
                         <v-spacer></v-spacer>
                         <v-spacer></v-spacer>
-                        <v-col><v-sheet class="pa-2 ma-2">
+                        <v-col>
+                            <v-sheet class="pa-2 ma-2" style="white-space: nowrap;">
                                 © AMUS IT Support
-                            </v-sheet></v-col>
-                        <v-col><v-sheet class="pa-2 ma-2">
+                            </v-sheet>
+                        </v-col>
+                        <v-col>
+                            <v-sheet class="pa-2 ma-2" style="white-space: nowrap;">
                                 / AMU'S
-                            </v-sheet></v-col>
+                            </v-sheet>
+                        </v-col>
                     </v-row>
                 </v-container>
                 <v-container class="bg-surface-variant">
@@ -64,9 +68,8 @@
             </v-main>
             <div class="text-center pa-4">
                 <v-dialog v-model="dialog" location="center">
-                    <v-card max-width="400" prepend-icon="mdi-update" :text="'残り' + seconds + '秒'"
-                        title="Update in progress" class="mx-auto">
-                        <div class="svg-container">
+                    <v-card max-width="400" prepend-icon="mdi-update" title="Update in progress" class="mx-auto">
+                        <div class="svg-container mx-5">
                             <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                                 <circle id="circle" cx="100" cy="100" r="80" stroke="black" stroke-width="8" fill="none"
                                     class="circle" />
@@ -190,7 +193,6 @@
                         this.seconds = this.secondsDefault
                         this.sets++
                         this.loading = false
-                        this.dialog = false
                     }
                 },
             },
