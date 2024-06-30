@@ -59,7 +59,7 @@
                 <v-container class="bg-surface-variant">
                     <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
                     <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable
-                        id="countdown-seconds"></v-text-field>
+                        id="text-seconds"></v-text-field>
                     <v-btn :disabled="loading" :loading="loading" @click="start" id="start-button">
                         Start
                     </v-btn>
@@ -71,13 +71,13 @@
                     <v-card max-width="400" prepend-icon="mdi-update" title="Update in progress" class="mx-auto">
                         <div class="svg-container mx-5">
                             <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                                <circle id="circle" cx="100" cy="100" r="80" stroke="black" stroke-width="8" fill="none"
-                                    class="circle" />
-                                <text x="100" y="116" id="number"></text>
+                                <circle ref="circle" id="circle" cx="100" cy="100" r="80" stroke="black"
+                                    stroke-width="8" fill="none" :class="circleClass" />
+                                <text x="100" y="116">{{number}}</text>
                             </svg>
                         </div>
                         <template v-slot:actions>
-                            <v-btn class="ms-auto" text="Ok" :disabled="loading" :loading="loading"
+                            <v-btn class="ms-auto" text="Roger Oll Korrect" :disabled="loading"
                                 @click="dialog = false"></v-btn>
                         </template>
                     </v-card>
@@ -86,121 +86,99 @@
         </v-app>
     </div>
 
-    <script lang="js">
-
-        let countdownInterval;
-
-        function startCountdown(seconds) {
-            const circle = document.getElementById('circle');
-            const numberText = document.getElementById('number');
-
-            let currentNumber = seconds;
-
-            function decrementNumber() {
-                // 一旦アニメーションをリセット
-                circle.classList.remove('animate');
-                circle.classList.add('reset');
-
-                if (currentNumber > 0) {
-                    currentNumber--;
-                    numberText.textContent = currentNumber;
-                    animateCircle();
-                }
-            }
-
-            function animateCircle() {
-                circle.classList.remove('reset');
-                void circle.offsetWidth; // Reflowをトリガー
-
-                setTimeout(function () {
-                    circle.classList.add('animate');
-                }, 50); // 50ミリ秒の待ち時間
-            }
-
-            // 初期値をセット
-            numberText.textContent = currentNumber;
-            animateCircle();
-
-            countdownInterval = setInterval(() => {
-                decrementNumber();
-                if (currentNumber <= 0) {
-                    clearInterval(countdownInterval);
-                }
-            }, 1000); // 1000ミリ秒ごとにカウントダウン
-        }
-
-        function startCountdownFromInput() {
-            const countdownInput = document.getElementById('countdown-seconds');
-            const countdownSeconds = parseInt(countdownInput.value, 10);
-            if (isNaN(countdownSeconds) || countdownSeconds <= 0) {
-                alert('有効な秒数を入力してください');
-                return;
-            }
-
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-            }
-
-            startCountdown(countdownSeconds);
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const startButton = document.getElementById('start-button');
-            const countdownInput = document.getElementById('countdown-seconds');
-
-            startButton.addEventListener('click', startCountdownFromInput);
-            countdownInput.addEventListener('keypress', function (event) {
-                if (event.key === 'Enter') {
-                    startCountdownFromInput();
-                }
-            });
-        });
-    </script>
-    <script src="https://unpkg.com/vue@3.4/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue@3.4/dist/vue.global.prod.js"></script>
     <script src="https://unpkg.com/vuetify@3.6/dist/vuetify.min.js"></script>
     <script lang="ts">
-        const vuetify = Vuetify.createVuetify()
-        const app = Vue.createApp({
-            data() {
+        const { createVuetify } = Vuetify
+        const { createApp, ref, watch, onMounted } = Vue
+        const vuetify = createVuetify()
+        createApp({
+            setup() {
+                const SECONDS_DEFAULT = 30;
+
+                const drawer = ref(false);
+                const sets = ref(1);
+                const seconds = ref(SECONDS_DEFAULT);
+                const loading = ref(false);
+                const time = ref([]);
+                const dialog = ref(false);
+                const number = ref(0);
+                const circle = ref(null);
+                const circleClass = ref('circle');
+
+                let timer = null;
+                let countdownInterval = null;
+
+                function animateCircle() {
+                    circleClass.value = 'circle reset';
+                    //console.log({ circleClass });
+                    //console.log({ circle });
+                    void circle.offsetWidth; // Reflowをトリガー
+
+                    setTimeout(() => {
+                        circleClass.value = 'circle animate';
+                        //console.log({ circleClass });
+                    }, 50); // 50ミリ秒の待ち時間後に表示アニメーション動作
+                };
+
+                function setSeconds() {
+                    number.value--
+                    if (Number(number.value) > 0) {
+                        animateCircle();
+                    } else {
+                        clearInterval(timer)
+                        seconds.value = SECONDS_DEFAULT
+                        sets.value++
+                        loading.value = false
+                    }
+                };
+
+                function start() {
+                    if (isNaN(seconds.value) || seconds.value <= 0) {
+                        alert('有効な秒数を入力してください');
+                        return;
+                    }
+
+                    number.value = seconds.value
+                    loading.value = true
+                    dialog.value = true
+                    time.value.push(new Date())
+                    animateCircle();
+                    timer = setInterval(setSeconds, 1000)
+                };
+
+                document.addEventListener('DOMContentLoaded', function () {
+                    //const startButton = document.getElementById('start-button');
+                    const secondsInput = document.getElementById('text-seconds');
+
+                    //startButton.addEventListener('click', start);
+                    secondsInput.addEventListener('keypress', function (event) {
+                        if (event.key === 'Enter') {
+                            start();
+                        }
+                    });
+                });
+
+                watch(() => {
+                });
+
+                onMounted(() => {
+                });
+
                 return {
-                    visual: false,
-                    info: {
-                        name: "",
-                        nickname: "",
-                        gender: "",
-                    },
-                    drawer: false,
-                    loading: false,
-                    dialog: false,
-                    sets: 1,
-                    secondsDefault: 30,
-                    seconds: 0,
-                    time: [],
-                    timer: null,
+                    start,
+                    circleClass,
+                    circle,
+                    drawer,
+                    loading,
+                    dialog,
+                    sets,
+                    seconds,
+                    time,
+                    number,
                 };
             },
-            methods: {
-                start() {
-                    this.loading = true
-                    this.dialog = true
-                    this.time.push(new Date())
-                    this.timer = setInterval(this.setSeconds, 1000)
-                },
-                setSeconds() {
-                    this.seconds--
-                    if (Number(this.seconds) <= 0) {
-                        clearInterval(this.timer)
-                        this.seconds = this.secondsDefault
-                        this.sets++
-                        this.loading = false
-                    }
-                },
-            },
-            mounted() {
-                this.seconds = this.secondsDefault
-            }
-        });
-        app.use(vuetify).mount('#app');
+        }).use(vuetify).mount('#app');
     </script>
 </body>
 
