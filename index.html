@@ -57,14 +57,23 @@
                     </v-row>
                 </v-container>
                 <v-container class="bg-surface-variant">
-                    <v-text-field v-model="sets" :disabled="loading" label="Sets" clearable></v-text-field>
-                    <v-text-field v-model="seconds" :disabled="loading" label="Seconds" clearable
-                        id="text-seconds"></v-text-field>
-                    <v-btn :disabled="loading" :loading="loading" @click="start" id="start-button">
-                        Start
+                    <v-text-field v-model="sets" label="Sets" clearable></v-text-field>
+                    <v-text-field v-model="seconds" label="Seconds" clearable id="text-seconds"></v-text-field>
+                    <v-btn @click="start" id="start-button" text="Start">
                     </v-btn>
                 </v-container>
-                <v-card v-for="item in time">{{item}}</v-card>
+                <v-card>
+                    <v-card-item>
+                        <v-card-title>
+                            History Date
+                            <span> </span>
+                            <v-btn @click="btnSort" :text="sortText"></v-btn>
+                        </v-card-title>
+                    </v-card-item>
+                    <v-card-text v-for="item in time">{{item.toLocaleString()}}</v-card-text>
+                    <v-card-action>
+                    </v-card-action>
+                </v-card>
             </v-main>
             <div class="text-center pa-4">
                 <v-dialog v-model="dialog" location="center">
@@ -105,9 +114,41 @@
                 const number = ref(0);
                 const circle = ref(null);
                 const circleClass = ref('circle');
+                const sortText = ref('Sort▼▲');
 
                 let timer = null;
                 let countdownInterval = null;
+                let sortHistory = false;
+
+                function btnSort() {
+                    var item = time.value
+                    //console.log({ item });
+                    if (sortHistory) {
+                        sortText.value = 'Sort▼'
+                        item.sort(function (first, second) {
+                            if (first > second) {
+                                return 1;
+                            } else if (first < second) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                    } else {
+                        sortText.value = 'Sort▲'
+                        item.sort(function (first, second) {
+                            if (first < second) {
+                                return 1;
+                            } else if (first > second) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        });
+                    };
+                    sortHistory = !sortHistory;
+                    time.value = item;
+                };
 
                 function animateCircle() {
                     circleClass.value = 'circle reset';
@@ -143,15 +184,14 @@
                     loading.value = true
                     dialog.value = true
                     time.value.push(new Date())
-                    animateCircle();
+                    clearInterval(timer)
                     timer = setInterval(setSeconds, 1000)
+                    animateCircle();
                 };
 
                 document.addEventListener('DOMContentLoaded', function () {
-                    //const startButton = document.getElementById('start-button');
                     const secondsInput = document.getElementById('text-seconds');
 
-                    //startButton.addEventListener('click', start);
                     secondsInput.addEventListener('keypress', function (event) {
                         if (event.key === 'Enter') {
                             start();
@@ -166,6 +206,8 @@
                 });
 
                 return {
+                    sortText,
+                    btnSort,
                     start,
                     circleClass,
                     circle,
