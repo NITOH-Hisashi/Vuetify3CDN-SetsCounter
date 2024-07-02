@@ -44,3 +44,18 @@ text {
 #controls {
     margin-top: 20px;
 }
+
+.v-btn {
+    margin: 0 16px;
+    /* ここでボタン間のスペースを設定 */
+}
+
+.transform {
+    text-transform: none;
+    /* テキスト変換を無効にする */
+}
+
+ol {
+    list-style-type: decimal;
+    padding-left: 20px;
+}
