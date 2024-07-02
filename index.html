@@ -67,7 +67,12 @@
                         <v-card-title>
                             History Date
                             <span> </span>
-                            <v-btn @click="btnSort" :text="sortText"></v-btn>
+                            <v-btn class="transform" @click="exportHistoryToCSV">Export</v-btn>
+                            <v-btn class="transform" outlined>
+                                Import
+                                <input type="file" @change="importHistoryFromCSV"
+                                    style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
+                            </v-btn>
                         </v-card-title>
                     </v-card-item>
                     <v-card-text>
@@ -131,6 +136,62 @@
                 let timer = null;
                 let countdownInterval = null;
                 let sortHistory = false;
+
+                function exportHistoryToCSV() {
+                    // 履歴データを取得
+                    const historiesData = histories.value;
+                    // CSVのヘッダ
+                    const csvHeader = 'TimeStamp\n';
+                    // CSVデータの生成
+                    const csvContent = historiesData.map(timestamp => {
+                        const date = new Date(timestamp);
+                        return date.toLocaleString();
+                    }).join('\n');
+
+                    // 完全なCSV内容
+                    const csvFullContent = csvHeader + csvContent + '\n';
+
+                    // CSVをBlobとして作成
+                    const blob = new Blob([csvFullContent], { type: 'text/csv' });
+                    const url = URL.createObjectURL(blob);
+
+                    // ダウンロード用のリンクを作成
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'history.csv';
+
+                    // ダウンロードをトリガー
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                };
+
+                function importHistoryFromCSV(event) {
+                    const file = event.target.files[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const content = e.target.result;
+                        const rows = content.split('\n').slice(1, content.length - 3); // ヘッダをスキップ
+
+                        var newHistory = [];
+                        rows.forEach(row => {
+                            //console.log({ row });
+                            const date = new Date(row).getTime();
+                            if (date) {
+                                //console.log({ date });
+                                newHistory.push(date);
+                            };
+                        });
+                        //console.log({ newHistory });
+
+                        //histories.value = [...histories.value, ...newHistory]; // 追加
+                        histories.value = newHistory; // 入れ替え
+                        saveHistory(histories.value);
+                    };
+                    reader.readAsText(file);
+                };
 
                 // 日付ごとに履歴をグループ化する関数
                 function groupHistoryByDate(history) {
