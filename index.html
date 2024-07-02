@@ -70,7 +70,7 @@
                             <v-btn @click="btnSort" :text="sortText"></v-btn>
                         </v-card-title>
                     </v-card-item>
-                    <v-card-text v-for="item in time">{{item.toLocaleString()}}</v-card-text>
+                    <v-card-text v-for="item in time">{{new Date(item).toLocaleString()}}</v-card-text>
                     <v-card-action>
                     </v-card-action>
                 </v-card>
@@ -104,6 +104,7 @@
         createApp({
             setup() {
                 const SECONDS_DEFAULT = 30;
+                const LOCAL_STORAGE_KEY = 'countdownHistory';
 
                 const drawer = ref(false);
                 const sets = ref(1);
@@ -120,9 +121,22 @@
                 let countdownInterval = null;
                 let sortHistory = false;
 
+                // ローカルストレージに配列を保存する関数
+                function saveHistory(history) {
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(history));
+                };
+
+                // ローカルストレージから配列を読み込む関数
+                function loadHistory() {
+                    return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+                };
+
                 function btnSort() {
-                    var item = time.value
-                    //console.log({ item });
+                    var item = loadHistory(); // 履歴をロード
+                    if (!item) {
+                        return;
+                    }
+                    console.log({ item });
                     if (sortHistory) {
                         sortText.value = 'Sort▼'
                         item.sort(function (first, second) {
@@ -184,6 +198,7 @@
                     loading.value = true
                     dialog.value = true
                     time.value.push(new Date())
+                    saveHistory(time.value); // ローカルストレージに保存
                     clearInterval(timer)
                     timer = setInterval(setSeconds, 1000)
                     animateCircle();
@@ -203,6 +218,7 @@
                 });
 
                 onMounted(() => {
+                    btnSort();
                 });
 
                 return {
