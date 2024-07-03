@@ -200,8 +200,8 @@
                         });
                         //console.log({ newHistory });
 
-                        //histories.value = [...histories.value, ...newHistory]; // 追加
-                        histories.value = newHistory; // 入れ替え
+                        histories.value = [...histories.value, ...newHistory]; // 追加
+                        //histories.value = newHistory; // 入れ替え
                         saveHistory(histories.value);
                     };
                     reader.readAsText(file);
