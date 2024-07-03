@@ -151,6 +151,20 @@
                     }
                 }
 
+                // ファイル名用の日時文字列
+                function getFormattedDate(date) {
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1します
+                    const day = String(date.getDate()).padStart(2, '0');
+
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const seconds = String(date.getSeconds()).padStart(2, '0');
+                    const ms = String(date.getMilliseconds()).padStart(3, '0');
+
+                    return `${year}${month}${day}T${hours}${minutes}${seconds}${ms}`;
+                }
+
                 function exportHistoryToCSV() {
                     // 履歴データを取得
                     const historiesData = histories.value;
@@ -172,7 +186,7 @@
                     // ダウンロード用のリンクを作成
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'history.csv';
+                    link.download = 'SetsCounter' + getFormattedDate(new Date()) + '.csv';
 
                     // ダウンロードをトリガー
                     document.body.appendChild(link);
