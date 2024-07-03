@@ -196,6 +196,9 @@
 
                 // 日付ごとに履歴をグループ化する関数
                 function groupHistoryByDate(histories) {
+                    if (!histories) {
+                        return null;
+                    }
                     return histories.reduce((acc, timestamp) => {
                         const date = new Date(timestamp).toLocaleDateString();
                         if (!acc[date]) {
