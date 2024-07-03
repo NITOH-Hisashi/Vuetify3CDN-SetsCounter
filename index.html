@@ -241,11 +241,11 @@
                     //console.log({ items });
 
                     if (sortHistory) {
-                        sortText.value = 'Sort▼'
-                        compareNumber = 1;
-                    } else {
                         sortText.value = 'Sort▲'
                         compareNumber = -1;
+                    } else {
+                        sortText.value = 'Sort▼'
+                        compareNumber = 1;
                     };
                     return items.sort(function (first, second) {
                         if (first < second) {
