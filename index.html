@@ -67,13 +67,7 @@
                         <v-card-title>
                             History Date
                             <span> </span>
-                            <v-btn class="transform" @click="btnSort" :text="sortText"></v-btn>
-                            <v-btn class="transform" @click="exportHistoryToCSV">Export</v-btn>
-                            <v-btn class="transform" outlined>
-                                Import
-                                <input type="file" @change="importHistoryFromCSV"
-                                    style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
-                            </v-btn>
+                            <v-btn class="transform" @click="btnSort" :text="sortText" color="info"></v-btn>
                         </v-card-title>
                     </v-card-item>
                     <v-card-text>
@@ -89,7 +83,13 @@
                         </ul>
                     </v-card-text>
                     <v-card-action>
-                        <v-btn class="transform" @click="deleteHistory">Delete</v-btn>
+                        <v-btn class="transform" @click="exportHistoryToCSV">Export</v-btn>
+                        <v-btn class="transform" outlined>
+                            Import
+                            <input type="file" @change="importHistoryFromCSV"
+                                style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
+                        </v-btn>
+                        <v-btn class="transform" @click="deleteHistory" color="error">Delete</v-btn>
                     </v-card-action>
                 </v-card>
             </v-main>
