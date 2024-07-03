@@ -3,3 +3,7 @@
 
 - https://ja.vuejs.org/
 - https://vuetifyjs.com/en/
+- https://pictogrammers.com/library/mdi/
+- https://developer.mozilla.org/ja/docs/Web/SVG/Element
+- https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference
+- https://developer.mozilla.org/ja/docs/Web/HTML/Element
