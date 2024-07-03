@@ -89,6 +89,7 @@
                         </ul>
                     </v-card-text>
                     <v-card-action>
+                        <v-btn class="transform" @click="deleteHistory">Delete</v-btn>
                     </v-card-action>
                 </v-card>
             </v-main>
@@ -137,6 +138,18 @@
                 let timer = null;
                 let countdownInterval = null;
                 let sortHistory = false;
+
+                function deleteHistory() {
+                    let result = confirm('履歴日時をブラウザから削除してよろしいですか？\n事前にエクスポートしておくと削除後にインポートが可能です');
+
+                    if (result) {
+                        histories.value = [];
+                        saveHistory(histories.value);
+                        //alert("削除しました");
+                    } else {
+                        //alert("削除しませんでした");
+                    }
+                }
 
                 function exportHistoryToCSV() {
                     // 履歴データを取得
@@ -309,6 +322,7 @@
                 });
 
                 return {
+                    deleteHistory,
                     exportHistoryToCSV,
                     importHistoryFromCSV,
                     groupHistoryByDate,
