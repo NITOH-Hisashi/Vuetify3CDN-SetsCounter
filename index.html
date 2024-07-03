@@ -59,7 +59,9 @@
                 <v-container class="bg-surface-variant">
                     <v-text-field v-model="sets" label="Sets" clearable></v-text-field>
                     <v-text-field v-model="seconds" label="Seconds" clearable id="text-seconds"></v-text-field>
-                    <v-btn class="transform" @click="start" id="start-button" text="Start">
+                    <v-btn class="transform" @click="start" id="start-button">
+                        <v-icon left>mdi-play</v-icon>
+                        Start
                     </v-btn>
                 </v-container>
                 <v-card>
@@ -67,7 +69,10 @@
                         <v-card-title>
                             History Date
                             <span> </span>
-                            <v-btn class="transform" @click="btnSort" :text="sortText" color="info"></v-btn>
+                            <v-btn class="transform" @click="btnSort" color="info">
+                                <v-icon left>mdi-sort</v-icon>
+                                {{ sortText }}
+                            </v-btn>
                         </v-card-title>
                     </v-card-item>
                     <v-card-text>
@@ -83,13 +88,20 @@
                         </ul>
                     </v-card-text>
                     <v-card-action>
-                        <v-btn class="transform" @click="exportHistoryToCSV">Export</v-btn>
+                        <v-btn class="transform" @click="exportHistoryToCSV">
+                            <v-icon left>mdi-file-export</v-icon>
+                            Export
+                        </v-btn>
                         <v-btn class="transform" outlined>
+                            <v-icon left>mdi-file-import</v-icon>
                             Import
                             <input type="file" @change="importHistoryFromCSV"
                                 style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
                         </v-btn>
-                        <v-btn class="transform" @click="deleteHistory" color="error">Delete</v-btn>
+                        <v-btn class="transform" @click="deleteHistory" color="error">
+                            <v-icon left>mdi-delete</v-icon>
+                            Delete
+                        </v-btn>
                     </v-card-action>
                 </v-card>
             </v-main>
