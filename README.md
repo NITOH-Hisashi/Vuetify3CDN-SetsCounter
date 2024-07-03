@@ -1,6 +1,5 @@
 # Vuetify3CDN SetsCounterApplication
-![スクリーンショット_3-7-2024_14391_](https://github.com/NITOH-Hisashi/Vuetify3CDN-SetsCounter/assets/97216430/b336e0d2-a3bb-4d41-b52a-0c6cc7512b4d)
-
+![スクリーンショット_3-7-2024_22750_](https://github.com/NITOH-Hisashi/Vuetify3CDN-SetsCounter/assets/97216430/9f78b36e-c788-4db8-b359-5f001d9854c6)
 - https://ja.vuejs.org/
 - https://vuetifyjs.com/en/
 - https://pictogrammers.com/library/mdi/
