@@ -210,7 +210,7 @@
                 // 日付ごとに履歴をグループ化する関数
                 function groupHistoryByDate(histories) {
                     if (!histories) {
-                        return null;
+                        return [];
                     }
                     return histories.reduce((acc, timestamp) => {
                         const date = new Date(timestamp).toLocaleDateString();
@@ -236,7 +236,7 @@
                     var compareNumber = 0;
                     var items = loadHistory(); // 履歴をロード
                     if (!items) {
-                        return;
+                        return [];
                     };
                     //console.log({ items });
 
