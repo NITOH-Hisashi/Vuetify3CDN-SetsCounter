@@ -1,4 +1,4 @@
 # Vuetify3CDN SetsCounterApplication
 - https://ja.vuejs.org/
 - https://vuetifyjs.com/en/
-- https://realfavicongenerator.net/
+- [Favicon Generator for perfect icons on all browsers (realfavicongenerator.net)](https://realfavicongenerator.net/)
