@@ -72,46 +72,48 @@
                         Start
                     </v-btn>
                 </v-container>
-                <v-card>
-                    <v-card-item>
-                        <v-card-title>
-                            History Date
-                            <span> </span>
-                            <v-btn class="transform" @click="btnSort" color="info">
-                                <v-icon left>mdi-sort</v-icon>
-                                {{ sortText }}
+                <v-container>
+                    <v-card>
+                        <v-card-item>
+                            <v-card-title>
+                                History Date
+                                <span> </span>
+                                <v-btn class="transform" @click="btnSort" color="info">
+                                    <v-icon left>mdi-sort</v-icon>
+                                    {{ sortText }}
+                                </v-btn>
+                            </v-card-title>
+                        </v-card-item>
+                        <v-card-text>
+                            <ul>
+                                <li v-for="(times, date) in groupHistoryByDate(histories)" :key="date">
+                                    {{ date }}
+                                    <ol>
+                                        <li v-for="(time, index) in times" :key="index">
+                                            {{ time }}
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ul>
+                        </v-card-text>
+                        <v-card-action>
+                            <v-btn class="transform" @click="exportHistoryToCSV">
+                                <v-icon left>mdi-file-export</v-icon>
+                                Export
                             </v-btn>
-                        </v-card-title>
-                    </v-card-item>
-                    <v-card-text>
-                        <ul>
-                            <li v-for="(times, date) in groupHistoryByDate(histories)" :key="date">
-                                {{ date }}
-                                <ol>
-                                    <li v-for="(time, index) in times" :key="index">
-                                        {{ time }}
-                                    </li>
-                                </ol>
-                            </li>
-                        </ul>
-                    </v-card-text>
-                    <v-card-action>
-                        <v-btn class="transform" @click="exportHistoryToCSV">
-                            <v-icon left>mdi-file-export</v-icon>
-                            Export
-                        </v-btn>
-                        <v-btn class="transform" outlined>
-                            <v-icon left>mdi-file-import</v-icon>
-                            Import
-                            <input type="file" @change="importHistoryFromCSV"
-                                style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
-                        </v-btn>
-                        <v-btn class="transform" @click="deleteHistory" color="error">
-                            <v-icon left>mdi-delete</v-icon>
-                            Delete
-                        </v-btn>
-                    </v-card-action>
-                </v-card>
+                            <v-btn class="transform" outlined>
+                                <v-icon left>mdi-file-import</v-icon>
+                                Import
+                                <input type="file" @change="importHistoryFromCSV"
+                                    style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
+                            </v-btn>
+                            <v-btn class="transform" @click="deleteHistory" color="error">
+                                <v-icon left>mdi-delete</v-icon>
+                                Delete
+                            </v-btn>
+                        </v-card-action>
+                    </v-card>
+                </v-container>
             </v-main>
             <div class="text-center pa-4">
                 <v-dialog v-model="dialog" location="center">
