@@ -8,4 +8,5 @@
 - https://developer.mozilla.org/ja/docs/Web/HTML/Element
 - [Favicon Generator for perfect icons on all browsers (realfavicongenerator.net)](https://realfavicongenerator.net/)
 - [Multiple Scans (free.fr)](http://tavmjong.free.fr/INKSCAPE/MANUAL/html/Trace-Multi.html)
-  
+- https://ja.wikibooks.org/wiki/Inkscape
+
