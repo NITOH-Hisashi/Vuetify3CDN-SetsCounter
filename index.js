@@ -7,7 +7,7 @@
                 const LOCAL_STORAGE_KEY = 'countdownHistory';
 
                 const drawer = ref(false);
-                const sets = ref(1);
+                // const sets = ref(1);
                 const seconds = ref(SECONDS_DEFAULT);
                 const loading = ref(false);
                 const histories = ref([]);
@@ -178,7 +178,7 @@
                     } else {
                         clearInterval(timer)
                         seconds.value = SECONDS_DEFAULT
-                        sets.value++
+                        // sets.value++
                         loading.value = false
                     };
                 };
@@ -230,7 +230,7 @@
                     drawer,
                     loading,
                     dialog,
-                    sets,
+                    // sets,
                     seconds,
                     histories,
                     number,
