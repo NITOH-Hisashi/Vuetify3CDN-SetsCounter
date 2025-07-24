@@ -22,7 +22,7 @@
                 let sortHistory = false;
 
                 function deleteHistory() {
-                    let result = confirm('履歴日時をブラウザから削除してよろしいですか？\n事前にエクスポートしておくと削除後にインポートが可能です');
+                    let result = confirm('履歴日時をブラウザから削除してよろしいですか？\n事前にエクスポートしておくと削除後にもインポートが可能です');
 
                     if (result) {
                         histories.value = [];
