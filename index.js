@@ -1,6 +1,8 @@
-        const { createVuetify } = Vuetify;
-        const { createApp, ref, watch, onMounted } = Vue;
-        const vuetify = createVuetify();
+const { createVuetify } = Vuetify;
+const { createApp, ref, watch, onMounted } = Vue;
+const vuetify = createVuetify();
+﻿const audio = new Audio("Clock.mp3");
+
         createApp({
             setup() {
                 const SECONDS_DEFAULT = 30;
@@ -21,6 +23,7 @@
                 let countdownInterval = null;
                 let sortHistory = false;
 
+                /** 削除ボタン */
                 function deleteHistory() {
                     let result = confirm('履歴日時をブラウザから削除してよろしいですか？\n事前にエクスポートしておくと削除後にもインポートが可能です');
 
@@ -33,7 +36,7 @@
                     }
                 }
 
-                // ファイル名用の日時文字列
+                /** ファイル名用の日時文字列 */
                 function getFormattedDate(date) {
                     const year = date.getFullYear();
                     const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1します
@@ -47,6 +50,7 @@
                     return `${year}${month}${day}T${hours}${minutes}${seconds}${ms}`;
                 }
 
+                /** エクスポートボタン */
                 function exportHistoryToCSV() {
                     // 履歴データを取得
                     const historiesData = histories.value;
@@ -76,6 +80,7 @@
                     document.body.removeChild(link);
                 };
 
+                /** インポートボタン */
                 function importHistoryFromCSV(event) {
                     const file = event.target.files[0];
                     if (!file) return;
@@ -103,7 +108,7 @@
                     reader.readAsText(file);
                 };
 
-                // 日付ごとに履歴をグループ化する関数
+                /** 日付ごとに履歴をグループ化する関数 */
                 function groupHistoryByDate(histories) {
                     if (!histories) {
                         return [];
@@ -118,12 +123,12 @@
                     }, {});
                 };
 
-                // ローカルストレージに配列を保存する関数
+                /** ローカルストレージに配列を保存する関数 */
                 function saveHistory(histories) {
                     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(histories));
                 };
 
-                // ローカルストレージから配列を読み込む関数
+                /** ローカルストレージから配列を読み込む関数 */
                 function loadHistory() {
                     return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
                 };
@@ -176,6 +181,7 @@
                     if (Number(number.value) > 0) {
                         animateCircle();
                     } else {
+                        audio.play();
                         clearInterval(timer)
                         seconds.value = SECONDS_DEFAULT
                         sets.value++
