@@ -1,5 +1,8 @@
 {
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": false,
     "cSpell.words": [
+        "AMUS",
         "Korrect",
         "realfavicongenerator"
     ]
