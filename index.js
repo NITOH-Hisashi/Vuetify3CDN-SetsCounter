@@ -248,26 +248,32 @@ createApp({
                 image="2275137.jpg"
                 density="prominent"
                 style="height: 132px;"
-                class="d-flex flex-row align-end"
             >
                 <!-- ヘッドバー  -->
-                <v-app-bar-nav-icon @click="drawer = !drawer">
-                </v-app-bar-nav-icon>
-                <v-toolbar-title>
-                    SetsCounter
-                </v-toolbar-title>
+                <div
+                    style="height: 132px;"
+                    class="d-flex flex-row align-end w-100"
+                    >
+                    <v-app-bar-nav-icon
+                        @click="drawer = !drawer"
+                        >
+                    </v-app-bar-nav-icon>
+                    <v-toolbar-title>
+                        SetsCounter
+                    </v-toolbar-title>
+                </div>
             </v-app-bar>
 
             <v-navigation-drawer v-model="drawer" app>
                 <!-- サイドメニューバー  -->
                 <v-expansion-panels>
-                    <v-expansion-panel>
+                    <v-expansion-panel class="pa-4">
                         <a href="https://ntl.amus.biz" target="_blank">ntl.amus.biz</a>
                     </v-expansion-panel>
-                    <v-expansion-panel>
+                    <v-expansion-panel class="pa-4">
                         <a href="https://www.amus.biz" target="_blank">www.amus.biz</a>
                     </v-expansion-panel>
-                    <v-expansion-panel>
+                    <v-expansion-panel class="pa-4">
                         <a href="https://www.ac-illust.com/main/detail.php?id=2275137&word=%E3%83%97%E3%83%A9%E3%83%B3%E3%82%AF%E3%80%80%E5%A5%B3%E6%80%A7"
                             target="_blank">イラスト素材せいじんさん</a>
                     </v-expansion-panel>
