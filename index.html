@@ -1,144 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
 
-<head>
-    <meta charset="UTF-8">
-    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/vuetify@3.6/dist/vuetify.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./index.css">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
-    <title>SetsCounter Application © AMUS IT Support / AMU'S</title>
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.x/css/materialdesignicons.min.css" rel="stylesheet">
+        <link href="https://unpkg.com/vuetify@3.6/dist/vuetify.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="./index.css">
+        <meta name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+        <title>SetsCounter Application © AMUS IT Support / AMU'S</title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
-    <link rel="manifest" href="./site.webmanifest">
-    <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-</head>
+        <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+        <link rel="manifest" href="./site.webmanifest">
+        <link rel="mask-icon" href="./safari-pinned-tab.svg" color="#5bbad5">
+        <meta name="msapplication-TileColor" content="#da532c">
+        <meta name="theme-color" content="#ffffff">
+    </head>
 
-<body>
-    <div id="app">
-        <v-app>
-            <v-app-bar app image="2275137.jpg" density="prominent" style="height: 132px;">
-                <!-- ヘッドバー  -->
-                <v-app-bar-nav-icon @click="drawer = !drawer" style="height: 132px;"></v-app-bar-nav-icon>
-                <v-toolbar-title>
-                    SetsCounter
-                </v-toolbar-title>
-            </v-app-bar>
+    <body>
+        <div id="app"></div>
 
-            <v-navigation-drawer v-model="drawer" app>
-                <!-- サイドメニューバー  -->
-                <v-expansion-panels>
-                    <v-expansion-panel>
-                        <a href="https://ntl.amus.biz" target="_blank">ntl.amus.biz</a>
-                    </v-expansion-panel>
-                    <v-expansion-panel>
-                        <a href="https://www.amus.biz" target="_blank">www.amus.biz</a>
-                    </v-expansion-panel>
-                    <v-expansion-panel>
-                        <a href="https://www.ac-illust.com/main/detail.php?id=2275137&word=%E3%83%97%E3%83%A9%E3%83%B3%E3%82%AF%E3%80%80%E5%A5%B3%E6%80%A7"
-                            target="_blank">イラスト素材せいじんさん</a>
-                    </v-expansion-panel>
-                </v-expansion-panels>
-            </v-navigation-drawer>
-
-            <v-main>
-                <!-- メインコンテンツ  -->
-                <v-container>
-                    <v-row>
-                        <v-spacer></v-spacer>
-                        <v-spacer></v-spacer>
-                        <v-col>
-                            <v-sheet class="pa-2 ma-2" style="white-space: nowrap;">
-                                © AMUS IT Support
-                            </v-sheet>
-                        </v-col>
-                        <v-col>
-                            <v-sheet class="pa-2 ma-2" style="white-space: nowrap;">
-                                / AMU'S
-                            </v-sheet>
-                        </v-col>
-                    </v-row>
-                </v-container>
-                <v-container class="bg-surface-variant">
-                    <v-text-field v-model="sets" label="Sets" clearable></v-text-field>
-                    <v-text-field v-model="seconds" label="Seconds" clearable id="text-seconds"></v-text-field>
-                    <v-btn class="transform" @click="start" id="start-button">
-                        <v-icon left>mdi-play</v-icon>
-                        Start
-                    </v-btn>
-                </v-container>
-                <v-container>
-                    <v-card>
-                        <v-card-item>
-                            <v-card-title>
-                                History Date
-                                <span> </span>
-                                <v-btn class="transform" @click="btnSort" color="info">
-                                    <v-icon left>mdi-sort</v-icon>
-                                    {{ sortText }}
-                                </v-btn>
-                            </v-card-title>
-                        </v-card-item>
-                        <v-card-text>
-                            <ul>
-                                <li v-for="(times, date) in groupHistoryByDate(histories)" :key="date">
-                                    {{ date }}
-                                    <ol>
-                                        <li v-for="(time, index) in times" :key="index">
-                                            {{ time }}
-                                        </li>
-                                    </ol>
-                                </li>
-                            </ul>
-                        </v-card-text>
-                        <v-card-action>
-                            <v-btn class="transform" @click="exportHistoryToCSV">
-                                <v-icon left>mdi-file-export</v-icon>
-                                Export
-                            </v-btn>
-                            <v-btn class="transform" outlined>
-                                <v-icon left>mdi-file-import</v-icon>
-                                Import
-                                <input type="file" @change="importHistoryFromCSV"
-                                    style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
-                            </v-btn>
-                            <v-btn class="transform" @click="deleteHistory" color="error">
-                                <v-icon left>mdi-delete</v-icon>
-                                Delete
-                            </v-btn>
-                        </v-card-action>
-                    </v-card>
-                </v-container>
-            </v-main>
-            <div class="text-center pa-4">
-                <v-dialog v-model="dialog" location="center">
-                    <v-card max-width="400" prepend-icon="mdi-update" title="Update in progress" class="mx-auto">
-                        <div class="svg-container mx-5">
-                            <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                                <circle ref="circle" id="circle" cx="100" cy="100" r="80" stroke="black"
-                                    stroke-width="8" fill="none" :class="circleClass" />
-                                <text x="100" y="116">{{number}}</text>
-                            </svg>
-                        </div>
-                        <template v-slot:actions>
-                            <v-btn class="ms-auto" text="Roger Oll Korrect" :disabled="loading"
-                                @click="dialog = false"></v-btn>
-                        </template>
-                    </v-card>
-                </v-dialog>
-            </div>
-        </v-app>
-    </div>
-
-    <script src="https://unpkg.com/vue@3.4/dist/vue.global.prod.js"></script>
-    <script src="https://unpkg.com/vuetify@3.6/dist/vuetify.min.js"></script>
-    <script  type="module" src="./index.js"></script>
-</body>
+        <script src="https://unpkg.com/vue@3.4/dist/vue.global.prod.js"></script>
+        <script src="https://unpkg.com/vuetify@3.6/dist/vuetify.min.js"></script>
+        <script type="module" src="./index.js"></script>
+    </body>
 
 </html>
 <style>

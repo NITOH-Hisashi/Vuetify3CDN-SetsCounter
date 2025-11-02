@@ -1,245 +1,357 @@
 const { createVuetify } = Vuetify;
 const { createApp, ref, watch, onMounted } = Vue;
 const vuetify = createVuetify();
-﻿const audio = new Audio("Clock.mp3");
 
-        createApp({
-            setup() {
-                const SECONDS_DEFAULT = 30;
-                const LOCAL_STORAGE_KEY = 'countdownHistory';
+createApp({
+    setup() {
+        const SECONDS_DEFAULT = 30;
+        const LOCAL_STORAGE_KEY = 'countdownHistory';
 
-                const drawer = ref(false);
-                const sets = ref(1);
-                const seconds = ref(SECONDS_DEFAULT);
-                const loading = ref(false);
-                const histories = ref([]);
-                const dialog = ref(false);
-                const number = ref(0);
-                const circle = ref(null);
-                const circleClass = ref('circle');
-                const sortText = ref('Sort▼▲');
+        const drawer = ref(false);
+        const sets = ref(1);
+        const seconds = ref(SECONDS_DEFAULT);
+        const loading = ref(false);
+        const histories = ref([]);
+        const dialog = ref(false);
+        const number = ref(0);
+        const circle = ref(null);
+        const circleClass = ref('circle');
+        const sortText = ref('Sort▼▲');
 
-                let timer = null;
-                let countdownInterval = null;
-                let sortHistory = false;
+        let timer = null;
+        let sortHistory = false;
 
-                /** 削除ボタン */
-                function deleteHistory() {
-                    let result = confirm('履歴日時をブラウザから削除してよろしいですか？\n事前にエクスポートしておくと削除後にもインポートが可能です');
+        /** 削除ボタン */
+        function deleteHistory() {
+            let result = confirm('履歴日時をブラウザから削除してよろしいですか？\n事前にエクスポートしておくと削除後にもインポートが可能です');
 
-                    if (result) {
-                        histories.value = [];
-                        saveHistory(histories.value);
-                        //alert("削除しました");
-                    } else {
-                        //alert("削除しませんでした");
-                    }
-                }
+            if (result) {
+                histories.value = [];
+                saveHistory(histories.value);
+                //alert("削除しました");
+            } else {
+                //alert("削除しませんでした");
+            }
+        }
 
-                /** ファイル名用の日時文字列 */
-                function getFormattedDate(date) {
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1します
-                    const day = String(date.getDate()).padStart(2, '0');
+        /** ファイル名用の日時文字列 */
+        function getFormattedDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 月は0から始まるので+1します
+            const day = String(date.getDate()).padStart(2, '0');
 
-                    const hours = String(date.getHours()).padStart(2, '0');
-                    const minutes = String(date.getMinutes()).padStart(2, '0');
-                    const seconds = String(date.getSeconds()).padStart(2, '0');
-                    const ms = String(date.getMilliseconds()).padStart(3, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            const ms = String(date.getMilliseconds()).padStart(3, '0');
 
-                    return `${year}${month}${day}T${hours}${minutes}${seconds}${ms}`;
-                }
+            return `${year}${month}${day}T${hours}${minutes}${seconds}${ms}`;
+        }
 
-                /** エクスポートボタン */
-                function exportHistoryToCSV() {
-                    // 履歴データを取得
-                    const historiesData = histories.value;
-                    // CSVのヘッダ
-                    const csvHeader = 'TimeStamp\n';
-                    // CSVデータの生成
-                    const csvContent = historiesData.map(timestamp => {
-                        const date = new Date(timestamp);
-                        return date.toLocaleString();
-                    }).join('\n');
+        /** エクスポートボタン */
+        function exportHistoryToCSV() {
+            // 履歴データを取得
+            const historiesData = histories.value;
+            // CSVのヘッダ
+            const csvHeader = 'TimeStamp\n';
+            // CSVデータの生成
+            const csvContent = historiesData.map(timestamp => {
+                const date = new Date(timestamp);
+                return date.toLocaleString();
+            }).join('\n');
 
-                    // 完全なCSV内容
-                    const csvFullContent = csvHeader + csvContent + '\n';
+            // 完全なCSV内容
+            const csvFullContent = csvHeader + csvContent + '\n';
 
-                    // CSVをBlobとして作成
-                    const blob = new Blob([csvFullContent], { type: 'text/csv' });
-                    const url = URL.createObjectURL(blob);
+            // CSVをBlobとして作成
+            const blob = new Blob([csvFullContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
 
-                    // ダウンロード用のリンクを作成
-                    const link = document.createElement('a');
-                    link.href = url;
-                    link.download = 'SetsCounter' + getFormattedDate(new Date()) + '.csv';
+            // ダウンロード用のリンクを作成
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'SetsCounter' + getFormattedDate(new Date()) + '.csv';
 
-                    // ダウンロードをトリガー
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                };
+            // ダウンロードをトリガー
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
 
-                /** インポートボタン */
-                function importHistoryFromCSV(event) {
-                    const file = event.target.files[0];
-                    if (!file) return;
+        /** インポートボタン */
+        function importHistoryFromCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const content = e.target.result;
-                        const rows = content.split('\n').slice(1, content.length - 3); // ヘッダをスキップ
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const content = e.target.result;
+                const rows = content.split('\n').slice(1, content.length - 3); // ヘッダをスキップ
 
-                        var newHistory = [];
-                        rows.forEach(row => {
-                            //console.log({ row });
-                            const date = new Date(row).getTime();
-                            if (date) {
-                                //console.log({ date });
-                                newHistory.push(date);
-                            };
-                        });
-                        //console.log({ newHistory });
-
-                        histories.value = [...histories.value, ...newHistory]; // 追加
-                        //histories.value = newHistory; // 入れ替え
-                        saveHistory(histories.value);
+                var newHistory = [];
+                rows.forEach(row => {
+                    //console.log({ row });
+                    const date = new Date(row).getTime();
+                    if (date) {
+                        //console.log({ date });
+                        newHistory.push(date);
                     };
-                    reader.readAsText(file);
-                };
-
-                /** 日付ごとに履歴をグループ化する関数 */
-                function groupHistoryByDate(histories) {
-                    if (!histories) {
-                        return [];
-                    }
-                    return histories.reduce((acc, timestamp) => {
-                        const date = new Date(timestamp).toLocaleDateString();
-                        if (!acc[date]) {
-                            acc[date] = [];
-                        };
-                        acc[date].push(new Date(timestamp).toLocaleTimeString());
-                        return acc;
-                    }, {});
-                };
-
-                /** ローカルストレージに配列を保存する関数 */
-                function saveHistory(histories) {
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(histories));
-                };
-
-                /** ローカルストレージから配列を読み込む関数 */
-                function loadHistory() {
-                    return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-                };
-
-                function compareNumbers() {
-                    var compareNumber = 0;
-                    var items = loadHistory(); // 履歴をロード
-                    if (!items) {
-                        return [];
-                    };
-                    //console.log({ items });
-
-                    if (sortHistory) {
-                        sortText.value = 'Sort▲'
-                        compareNumber = -1;
-                    } else {
-                        sortText.value = 'Sort▼'
-                        compareNumber = 1;
-                    };
-                    return items.sort(function (first, second) {
-                        if (first < second) {
-                            return compareNumber;
-                        } else if (first > second) {
-                            return -compareNumber;
-                        } else {
-                            return 0;
-                        };
-                    });
-                };
-
-                function btnSort() {
-                    sortHistory = !sortHistory;
-                    histories.value = compareNumbers();
-                };
-
-                function animateCircle() {
-                    circleClass.value = 'circle reset';
-                    //console.log({ circleClass });
-                    //console.log({ circle });
-                    void circle.offsetWidth; // Reflowをトリガー
-
-                    setTimeout(() => {
-                        circleClass.value = 'circle animate';
-                        //console.log({ circleClass });
-                    }, 50); // 50ミリ秒の待ち時間後に表示アニメーション動作
-                };
-
-                function setSeconds() {
-                    number.value--
-                    if (Number(number.value) > 0) {
-                        animateCircle();
-                    } else {
-                        audio.play();
-                        clearInterval(timer)
-                        seconds.value = SECONDS_DEFAULT
-                        sets.value++
-                        loading.value = false
-                    };
-                };
-
-                function start() {
-                    if (isNaN(seconds.value) || seconds.value <= 0) {
-                        alert('有効な秒数を入力してください');
-                        return;
-                    };
-
-                    number.value = seconds.value;
-                    loading.value = true;
-                    dialog.value = true;
-                    histories.value.push(new Date().getTime());
-                    saveHistory(histories.value); // ローカルストレージに保存
-                    histories.value = compareNumbers();
-                    clearInterval(timer);
-                    timer = setInterval(setSeconds, 1000);
-                    animateCircle();
-                };
-
-                document.addEventListener('DOMContentLoaded', function () {
-                    const secondsInput = document.getElementById('text-seconds');
-
-                    secondsInput.addEventListener('keypress', function (event) {
-                        if (event.key === 'Enter') {
-                            start();
-                        };
-                    });
                 });
+                //console.log({ newHistory });
 
-                watch(() => {
-                });
+                histories.value = [...histories.value, ...newHistory]; // 追加
+                //histories.value = newHistory; // 入れ替え
+                saveHistory(histories.value);
+            };
+            reader.readAsText(file);
+        };
 
-                onMounted(() => {
-                    histories.value = compareNumbers();
-                });
-
-                return {
-                    deleteHistory,
-                    exportHistoryToCSV,
-                    importHistoryFromCSV,
-                    groupHistoryByDate,
-                    sortText,
-                    btnSort,
-                    start,
-                    circleClass,
-                    circle,
-                    drawer,
-                    loading,
-                    dialog,
-                    sets,
-                    seconds,
-                    histories,
-                    number,
+        /** 日付ごとに履歴をグループ化する関数 */
+        function groupHistoryByDate(histories) {
+            if (!histories) {
+                return [];
+            }
+            return histories.reduce((acc, timestamp) => {
+                const date = new Date(timestamp).toLocaleDateString();
+                if (!acc[date]) {
+                    acc[date] = [];
                 };
-            },
-        }).use(vuetify).mount('#app');
+                acc[date].push(new Date(timestamp).toLocaleTimeString());
+                return acc;
+            }, {});
+        };
+
+        /** ローカルストレージに配列を保存する関数 */
+        function saveHistory(histories) {
+            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(histories));
+        };
+
+        /** ローカルストレージから配列を読み込む関数 */
+        function loadHistory() {
+            return JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+        };
+
+        function compareNumbers() {
+            var compareNumber = 0;
+            var items = loadHistory(); // 履歴をロード
+            if (!items) {
+                return [];
+            };
+            //console.log({ items });
+
+            if (sortHistory) {
+                sortText.value = 'Sort▲'
+                compareNumber = -1;
+            } else {
+                sortText.value = 'Sort▼'
+                compareNumber = 1;
+            };
+            return items.sort(function (first, second) {
+                if (first < second) {
+                    return compareNumber;
+                } else if (first > second) {
+                    return -compareNumber;
+                } else {
+                    return 0;
+                };
+            });
+        };
+
+        function btnSort() {
+            sortHistory = !sortHistory;
+            histories.value = compareNumbers();
+        };
+
+        function animateCircle() {
+            circleClass.value = 'circle reset';
+            //console.log({ circleClass });
+            //console.log({ circle });
+            void circle.offsetWidth; // Reflowをトリガー
+
+            setTimeout(() => {
+                circleClass.value = 'circle animate';
+                //console.log({ circleClass });
+            }, 50); // 50ミリ秒の待ち時間後に表示アニメーション動作
+        };
+
+        function setSeconds() {
+            number.value--
+            if (Number(number.value) > 0) {
+                animateCircle();
+            } else {
+                const audio = new Audio("Clock.mp3");
+                audio.play();
+                clearInterval(timer)
+                seconds.value = SECONDS_DEFAULT
+                sets.value++
+                loading.value = false
+            };
+        };
+
+        function start() {
+            if (isNaN(seconds.value) || seconds.value <= 0) {
+                alert('有効な秒数を入力してください');
+                return;
+            };
+
+            number.value = seconds.value;
+            loading.value = true;
+            dialog.value = true;
+            histories.value.push(new Date().getTime());
+            saveHistory(histories.value); // ローカルストレージに保存
+            histories.value = compareNumbers();
+            clearInterval(timer);
+            timer = setInterval(setSeconds, 1000);
+            animateCircle();
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const secondsInput = document.getElementById('text-seconds');
+
+            secondsInput.addEventListener('keypress', function (event) {
+                if (event.key === 'Enter') {
+                    start();
+                };
+            });
+        });
+
+        watch(() => {
+        });
+
+        onMounted(() => {
+            histories.value = compareNumbers();
+        });
+
+        return {
+            deleteHistory,
+            exportHistoryToCSV,
+            importHistoryFromCSV,
+            groupHistoryByDate,
+            sortText,
+            btnSort,
+            start,
+            circleClass,
+            circle,
+            drawer,
+            loading,
+            dialog,
+            sets,
+            seconds,
+            histories,
+            number,
+        };
+    },
+    template: `
+        <v-app>
+            <v-app-bar
+                app
+                image="2275137.jpg"
+                density="prominent"
+                style="height: 132px;"
+                class="d-flex flex-row align-end"
+            >
+                <!-- ヘッドバー  -->
+                <v-app-bar-nav-icon @click="drawer = !drawer">
+                </v-app-bar-nav-icon>
+                <v-toolbar-title>
+                    SetsCounter
+                </v-toolbar-title>
+            </v-app-bar>
+
+            <v-navigation-drawer v-model="drawer" app>
+                <!-- サイドメニューバー  -->
+                <v-expansion-panels>
+                    <v-expansion-panel>
+                        <a href="https://ntl.amus.biz" target="_blank">ntl.amus.biz</a>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://www.amus.biz" target="_blank">www.amus.biz</a>
+                    </v-expansion-panel>
+                    <v-expansion-panel>
+                        <a href="https://www.ac-illust.com/main/detail.php?id=2275137&word=%E3%83%97%E3%83%A9%E3%83%B3%E3%82%AF%E3%80%80%E5%A5%B3%E6%80%A7"
+                            target="_blank">イラスト素材せいじんさん</a>
+                    </v-expansion-panel>
+                </v-expansion-panels>
+            </v-navigation-drawer>
+
+            <v-main>
+                <!-- メインコンテンツ  -->
+                <v-container class="d-flex flex-row justify-end pa-1">
+                    <div class="ma-2 justify-end" style="white-space: nowrap;">
+                        © AMUS IT Support
+                        <wbr>
+                        / AMU'S
+                    </div>
+                </v-container>
+                <v-container class="bg-surface-variant">
+                    <v-text-field v-model="sets" label="Sets" clearable></v-text-field>
+                    <v-text-field v-model="seconds" label="Seconds" clearable id="text-seconds"></v-text-field>
+                    <v-btn class="transform" @click="start" id="start-button">
+                        <v-icon left>mdi-play</v-icon>
+                        Start
+                    </v-btn>
+                </v-container>
+                <v-container>
+                    <v-card>
+                        <v-card-item>
+                            <v-card-title>
+                                History Date
+                                <span> </span>
+                                <v-btn class="transform" @click="btnSort" color="info">
+                                    <v-icon left>mdi-sort</v-icon>
+                                    {{ sortText }}
+                                </v-btn>
+                            </v-card-title>
+                        </v-card-item>
+                        <v-card-text>
+                            <ul>
+                                <li v-for="(times, date) in groupHistoryByDate(histories)" :key="date">
+                                    {{ date }}
+                                    <ol>
+                                        <li v-for="(time, index) in times" :key="index">
+                                            {{ time }}
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ul>
+                        </v-card-text>
+                        <v-card-action>
+                            <v-btn class="transform" @click="exportHistoryToCSV">
+                                <v-icon left>mdi-file-export</v-icon>
+                                Export
+                            </v-btn>
+                            <v-btn class="transform" outlined>
+                                <v-icon left>mdi-file-import</v-icon>
+                                Import
+                                <input type="file" @change="importHistoryFromCSV"
+                                    style="opacity: 0; position: absolute; left: 0; top: 0; width: 100%; height: 100%;" />
+                            </v-btn>
+                            <v-btn class="transform" @click="deleteHistory" color="error">
+                                <v-icon left>mdi-delete</v-icon>
+                                Delete
+                            </v-btn>
+                        </v-card-action>
+                    </v-card>
+                </v-container>
+            </v-main>
+            <div class="text-center pa-4">
+                <v-dialog v-model="dialog" location="center">
+                    <v-card max-width="400" prepend-icon="mdi-update" title="Update in progress" class="mx-auto">
+                        <div class="svg-container mx-5">
+                            <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                <circle ref="circle" id="circle" cx="100" cy="100" r="80" stroke="black"
+                                    stroke-width="8" fill="none" :class="circleClass" />
+                                <text x="100" y="116">{{number}}</text>
+                            </svg>
+                        </div>
+                        <template v-slot:actions>
+                            <v-btn class="ms-auto" text="Roger Oll Korrect" :disabled="loading"
+                                @click="dialog = false"></v-btn>
+                        </template>
+                    </v-card>
+                </v-dialog>
+            </div>
+        </v-app>
+    
+    `,
+}).use(vuetify).mount('#app');
